@@ -20,7 +20,6 @@ const Login = () => {
         e.preventDefault();
         try {
             const respone = await api.post('http://localhost:5000/users/login', userDetails,{ withCredentials: true } );
-            console.log("response=login", respone);
             alert(respone.data.message);
             setIsLoggedIn(true)
             setUser({email:respone.data.email,username:respone.data.username})

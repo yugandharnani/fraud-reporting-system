@@ -1,6 +1,4 @@
 const jwt = require("jsonwebtoken");
-const dotEnv = require("dotenv");
-dotEnv.config();
 module.exports = (req, res, next) => {
    const token = req.cookies.accessToken;
   if (!token) {

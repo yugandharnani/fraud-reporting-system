@@ -9,7 +9,6 @@ import CreateCase from './CreateCase'
 import axios from 'axios'
 
 
-
 const Home = () => {
     const {isLoggedIn,setIsLoggedIn,setUser} = useContext(UserContext);
     useEffect(() => {
@@ -37,6 +36,7 @@ const Home = () => {
                 <>
                 <Route path="/" element={<FRSHome/>} />
                 <Route path="/createcase" element={<CreateCase/>} />
+                <Route path="/caseoverview/:caseId" element={<CreateCase/>} />
                 </>
               )}
                 <Route path="/signup" element={<Signup />} />

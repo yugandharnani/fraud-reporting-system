@@ -1,18 +1,19 @@
-import React, { use, useEffect, useState } from "react";
+import React, { use, useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { set } from "mongoose";
 const roles = ["User", "Investigator", "Admin"]; // Example roles
 import api from "./api";
+import { UserContext } from "../context/UserContext";
 const FRSHome = () => {
   const navigator = useNavigate();
   const [selectedRole, setSelectedRole] = useState(roles[0]);
   const [page,setPage]=useState(1);
   const limit =10;
   const [totalCases, setTotalCases] = useState(0);
-
   const [cases, setCases] = useState([]);
 
+  const {caseId,setCaseId}=useContext(UserContext)
 
   const fetchCases = async (pageNumber=1) => {
     try {
@@ -45,12 +46,15 @@ const FRSHome = () => {
         withCredentials: true,
       }
     );
+    setCaseId(res.data.case.caseId);
     navigator("/createcase");
     //updates home page with newly created case
     fetchCases();
 
     alert("Create Case clicked!");
   };
+  
+  
   const totalPages = Math.ceil(totalCases / limit);
 
     const setPagination =(page) =>{
@@ -123,7 +127,7 @@ const FRSHome = () => {
           {cases.map((c) => (
             <tr key={c.id}>
               <td style={{ padding: "10px", border: "1px solid #ddd" }}>
-                {c.caseId}
+                <Link style={{ textDecoration: "none" }} to={`/caseoverview/${c.caseId}`}>{c.caseId}</Link>
               </td>
               <td style={{ padding: "10px", border: "1px solid #ddd" }}>
                 {c.title}

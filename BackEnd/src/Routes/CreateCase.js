@@ -63,6 +63,9 @@ async function generateCaseId() {
   return `${year}-${counter.seq}`;
 }
 
+
+
+
 router.get('/cases', checkAuth, async (req, res) => {
   try {
     const cases = await Case.find().sort({ created: -1 }).populate('createdBy', 'username email');
@@ -94,6 +97,35 @@ router.get('/mycases',checkAuth,async(req,res)=>{
     
   }
 })
+
+
+router.get('/cases/:caseId',async(req,res)=>{
+  const {caseId}=req.params;
+  try {
+    const caseItem = await Case.findOne({caseId}).populate('createdBy','username email');
+    if(!caseItem){  
+      return res.status(404).json({error:"Case not found"});
+    }
+    res.status(200).json({case:caseItem});
+  } catch (error) {
+    res.status(500).json({error:"Server error"});
+  }
+})
+
+
+router.post('/submit-case',async(req,res)=>{
+  const {caseId,caseType,caseCategory,caseDescription}=req.body;
+  const caseItem = await Case.findOne({caseId});
+  if(!caseItem){
+    return res.status(404).json({error:"Case not found"});
+  }
+  caseItem.caseType=caseType;
+  caseItem.caseCategory=caseCategory; 
+  caseItem.caseDescription=caseDescription;
+  await caseItem.save();
+  res.status(200).json({message:"Case details updated successfully", case:caseItem})
+})
+
 
 
 module.exports = router;

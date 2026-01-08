@@ -27,6 +27,8 @@ res.cookie('accessToken', accessToken, {
   sameSite: 'strict',
   maxAge: 24 * 60 * 60 * 1000 // 1 day
 });
+
+
     return res.status(200).json({ message: "signup successful",accessToken });
   } catch (error) {
     return res.status(400).json({ error: error.message });
@@ -97,7 +99,7 @@ router.post("/login", async (req, res) => {
     })
     findUser.refreshTokens.push(refreshToken);
     await findUser.save();
-    return res.status(200).json({ message: "login success",email:findUser.email,username:findUser.username,role: findUser.role });
+    return res.status(200).json({ message: "login success",accessToken,email:findUser.email,username:findUser.username,role: findUser.role });
   } catch (error) {
     return res.status(400).json({ error: "login failed"+ error.message });
   }
@@ -123,7 +125,7 @@ router.get('/refresh-token', async (req, res) => {
       }
 
       const newPayload = { userId: user._id.toString(), email: user.email, username: user.username, role: user.role };
-      const newAccessToken = jwt.sign(newPayload, process.env.ACCESS_SECRET || process.env.SECRETKEY, { expiresIn: "10s" });
+      const newAccessToken = jwt.sign(newPayload, process.env.ACCESS_SECRET || process.env.SECRETKEY, { expiresIn: "15m" });
       const newRefreshToken = jwt.sign(newPayload, process.env.REFRESH_SECRET || process.env.SECRETKEY , { expiresIn: "7d" });
 
       // Replace old refresh token with the new one (rotation)
